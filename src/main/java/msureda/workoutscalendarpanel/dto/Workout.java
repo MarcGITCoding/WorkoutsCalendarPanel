@@ -1,6 +1,7 @@
 package msureda.workoutscalendarpanel.dto;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 /**
  * Clase DTO para la tabla Workouts
@@ -11,6 +12,8 @@ public class Workout {
     private Date ForDate;
     private int UserId;
     private String Comments;
+    private ArrayList<Exercise> Exercises;
+    private User User;
     
     /**
      * @return the Id
@@ -66,5 +69,33 @@ public class Workout {
      */
     public void setComments(String Comments) {
         this.Comments = Comments;
+    }
+    
+    /**
+     * @return the Exercises
+     */
+    public ArrayList<Exercise> getExercises() {
+        return Exercises;
+    }
+
+    /**
+     * @param Exercises the Exercises to set
+     */
+    public void setExercises(ArrayList<Exercise> Exercises) {
+        this.Exercises = Exercises;
+    }
+    
+    /**
+     * @return the User
+     */
+    public User setUser() {
+        return User;
+    }
+
+    /**
+     * @param User the User to set
+     */
+    public void setUser(User User) {
+        this.User = User;
     }
 }
