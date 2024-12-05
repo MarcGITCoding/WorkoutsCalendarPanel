@@ -2,9 +2,14 @@ package msureda.workoutscalendarpanel;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
+import msureda.workoutscalendarpanel.dataaccess.DataAccess;
 import msureda.workoutscalendarpanel.dto.Workout;
+import net.miginfocom.swing.MigLayout;
 
 /**
  *
@@ -16,10 +21,29 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
     private Color activeButtonColor = new Color(144, 238, 144);
     
     private final ArrayList<WorkoutsCalendarListener> listeners = new ArrayList<>();
+    private final ArrayList<Workout> workouts = new ArrayList<>();
     
-    public WorkoutsCalendarPanel (int year, int month) {
-        this.year = year;
-        this.month = month;
+    public WorkoutsCalendarPanel () {
+        setLayout(new MigLayout("wrap 7", "[grow, fill]", "[grow, fill]"));
+        
+        renderCalendar(year, month);
+    }
+    
+    public void renderCalendar(int year, int month) {
+        removeAll();
+        
+        ArrayList<Workout> fetchedWorkouts = new ArrayList();
+        try {
+            fetchedWorkouts = DataAccess.getWorkoutsByMonth(year, month);
+        } catch (SQLException ex) {
+            Logger.getLogger(WorkoutsCalendarPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        workouts.clear();
+        workouts.addAll(fetchedWorkouts);
+        
+        revalidate();
+        repaint();
     }
     
     public void addCalendarEventListener(WorkoutsCalendarListener listener) {
