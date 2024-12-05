@@ -59,14 +59,14 @@ public class DataAccess {
     public static ArrayList<Workout> getWorkoutsByDay(Date day) throws SQLException {
         ArrayList<Workout> workouts = new ArrayList<>();
         String sql = "SELECT Workouts.Id AS WorkoutId, Workouts.ForDate, Workouts.Comments, "
-                   + "Users.Id AS UserId, Users.Nom AS UserName, Users.Email AS UserEmail, "
-                   + "Exercises.Id AS ExerciseId, Exercises.NomExercici AS ExerciseName, Exercises.Descripcio AS ExerciseDescription, Exercises.DemoFoto AS ExerciseDemoPhoto "
-                   + "FROM Workouts "
-                   + "JOIN Users ON Workouts.UserId = Users.Id "
-                   + "LEFT JOIN WorkoutExercises ON Workouts.Id = WorkoutExercises.WorkoutId "
-                   + "LEFT JOIN Exercises ON WorkoutExercises.ExerciseId = Exercises.Id "
-                   + "WHERE DATE(Workouts.ForDate) = ? "
-                   + "ORDER BY Workouts.ForDate";
+            + "Usuaris.Id AS UserId, Usuaris.Nom AS UserName, Usuaris.Email AS UserEmail, "
+            + "Exercicis.Id AS ExerciseId, Exercicis.NomExercici AS ExerciseName, Exercicis.Descripcio AS ExerciseDescription, Exercicis.DemoFoto AS ExerciseDemoPhoto "
+            + "FROM Workouts "
+            + "JOIN Usuaris ON Workouts.UserId = Usuaris.Id "
+            + "LEFT JOIN ExercicisWorkouts ON Workouts.Id = ExercicisWorkouts.IdWorkout "
+            + "LEFT JOIN Exercicis ON ExercicisWorkouts.IdExercici = Exercicis.Id "
+            + "WHERE CONVERT(DATE, Workouts.ForDate) = ? "
+            + "ORDER BY Workouts.ForDate";
 
         try (Connection connection = getConnection();
              PreparedStatement selectStatement = connection.prepareStatement(sql)) {
