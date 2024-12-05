@@ -1,12 +1,16 @@
 package msureda.workoutscalendarpanel;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Point;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -25,6 +29,8 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
     private int year;
     private int month;
     private Color activeButtonColor = new Color(144, 238, 144);
+    private Point initialClick;
+    private JLabel monthYearLabel;
     
     private final ArrayList<WorkoutsCalendarListener> listeners = new ArrayList<>();
     private final ArrayList<Workout> workouts = new ArrayList<>();
@@ -37,11 +43,24 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         
         setLayout(new MigLayout("wrap 7", "[grow, fill]", "[grow, fill]"));
         
+        monthYearLabel = new JLabel("", SwingConstants.CENTER);
+        monthYearLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(monthYearLabel, "span, growx, align center");
+        
         renderCalendar(year, month);
     }
     
     public void renderCalendar(int year, int month) {
         removeAll();
+        
+        YearMonth yearMonth = YearMonth.of(year, month);
+        LocalDate firstDayOfMonth = yearMonth.atDay(1);
+        int totalDays = yearMonth.lengthOfMonth();
+        
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("es", "ES"));
+        monthYearLabel.setText(monthFormatter.format(yearMonth).toUpperCase());
+
+        add(monthYearLabel, "span, growx, align center");
         
         ArrayList<Workout> fetchedWorkouts = new ArrayList();
         try {
@@ -57,10 +76,6 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         for (String day : new String[]{"L", "M", "X", "J", "V", "S", "D"}) {
             add(new JLabel(day, SwingConstants.CENTER), "growx");
         }
-        
-        YearMonth yearMonth = YearMonth.of(year, month);
-        LocalDate firstDayOfMonth = yearMonth.atDay(1);
-        int totalDays = yearMonth.lengthOfMonth();
         
         //Blank spaces before month start
         int startDay = (firstDayOfMonth.get(ChronoField.DAY_OF_WEEK) + 6) % 7;
