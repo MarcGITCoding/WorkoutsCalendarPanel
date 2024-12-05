@@ -88,7 +88,7 @@ public class Workout {
     /**
      * @return the User
      */
-    public User setUser() {
+    public User getUser() {
         return User;
     }
 
