@@ -30,6 +30,11 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
     private final ArrayList<Workout> workouts = new ArrayList<>();
     
     public WorkoutsCalendarPanel () {
+        LocalDate currentDate = LocalDate.now();
+        
+        if (this.year == 0) this.year = currentDate.getYear();
+        if (this.month == 0) this.month = currentDate.getMonthValue();
+        
         setLayout(new MigLayout("wrap 7", "[grow, fill]", "[grow, fill]"));
         
         renderCalendar(year, month);
