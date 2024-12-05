@@ -63,7 +63,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         int totalDays = yearMonth.lengthOfMonth();
         
         //Blank spaces before month start
-        int startDay = (firstDayOfMonth.get(ChronoField.DAY_OF_WEEK) + 5) % 7;
+        int startDay = (firstDayOfMonth.get(ChronoField.DAY_OF_WEEK) + 6) % 7;
         for (int i = 0; i < startDay; i++) {
             add(new JLabel());
         }
