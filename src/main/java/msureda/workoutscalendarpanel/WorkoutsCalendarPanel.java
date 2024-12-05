@@ -3,6 +3,8 @@ package msureda.workoutscalendarpanel;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -48,6 +50,8 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         add(monthYearLabel, "span, growx, align center");
         
         renderCalendar(year, month);
+        
+        addSwipeListeners();
     }
     
     public void renderCalendar(int year, int month) {
@@ -120,6 +124,53 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         return button;
     }
     
+    private void addSwipeListeners() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                //Set click to know de initial location
+                initialClick = e.getPoint();
+            }
+        });
+
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (initialClick == null) return;
+
+                int diffY = e.getY() - initialClick.y;
+                if (Math.abs(diffY) > 50) {
+                    if (diffY > 0) { //swipe down, so we go prev month
+                        previousMonth();
+                    } else { //swipe up, so we go next month
+                        nextMonth();
+                    }
+                    initialClick = null; // Reset initial point after swipe
+                }
+            }
+        });
+    }
+
+    private void nextMonth() {
+        if (month == 12) {
+            year++;
+            month = 1;
+        } else {
+            month++;
+        }
+        renderCalendar(year, month);
+    }
+
+    private void previousMonth() {
+        if (month == 1) {
+            year--;
+            month = 12;
+        } else {
+            month--;
+        }
+        renderCalendar(year, month);
+    }
+
     public void addCalendarEventListener(WorkoutsCalendarListener listener) {
         listeners.add(listener);
     }
