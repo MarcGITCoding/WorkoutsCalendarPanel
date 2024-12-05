@@ -11,6 +11,12 @@
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>11.2.3.jre17</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.miglayout/miglayout-swing -->
         <dependency>
             <groupId>com.miglayout</groupId>
