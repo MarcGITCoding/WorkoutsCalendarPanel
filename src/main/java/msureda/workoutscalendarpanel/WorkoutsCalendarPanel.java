@@ -6,7 +6,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import msureda.workoutscalendarpanel.dataaccess.DataAccess;
 import msureda.workoutscalendarpanel.dto.Workout;
 import net.miginfocom.swing.MigLayout;
@@ -41,6 +43,11 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         
         workouts.clear();
         workouts.addAll(fetchedWorkouts);
+        
+        //DAY HEADERS
+        for (String day : new String[]{"L", "M", "X", "J", "V", "S", "D"}) {
+            add(new JLabel(day, SwingConstants.CENTER), "growx");
+        }
         
         revalidate();
         repaint();
