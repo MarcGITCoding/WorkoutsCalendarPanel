@@ -36,7 +36,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
     private Point initialClick;
     private JLabel monthYearLabel;
     
-    private final ArrayList<WorkoutsCalendarListener> listeners = new ArrayList<>();
+    private final ArrayList<CalendarEventListener> listeners = new ArrayList<>();
     private final ArrayList<Workout> workouts = new ArrayList<>();
     
     public WorkoutsCalendarPanel () {        
@@ -170,13 +170,17 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         renderCalendar(year, month);
     }
 
-    public void addCalendarEventListener(WorkoutsCalendarListener listener) {
+    public void addCalendarEventListener(CalendarEventListener listener) {
         listeners.add(listener);
+    }
+    
+    public void removeCalendarEventListener(CalendarEventListener listener) {
+        listeners.remove(listener);
     }
 
     private void fireWorkoutsEvent(ArrayList<Workout> dayWorkouts) {
         CalendarEvent event = new CalendarEvent(this, dayWorkouts);
-        for (WorkoutsCalendarListener listener : listeners) {
+        for (CalendarEventListener listener : listeners) {
             listener.workoutsSelected(event);
         }
     }
