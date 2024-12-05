@@ -2,7 +2,9 @@ package msureda.workoutscalendarpanel;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.util.ArrayList;
 import javax.swing.JPanel;
+import msureda.workoutscalendarpanel.dto.Workout;
 
 /**
  *
@@ -13,11 +15,24 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
     private int month;
     private Color activeButtonColor = new Color(144, 238, 144);
     
+    private final ArrayList<WorkoutsCalendarListener> listeners = new ArrayList<>();
+    
     public WorkoutsCalendarPanel (int year, int month) {
         this.year = year;
         this.month = month;
     }
+    
+    public void addCalendarEventListener(WorkoutsCalendarListener listener) {
+        listeners.add(listener);
+    }
 
+    private void fireWorkoutsEvent(ArrayList<Workout> dayWorkouts) {
+        CalendarEvent event = new CalendarEvent(this, dayWorkouts);
+        for (WorkoutsCalendarListener listener : listeners) {
+            listener.workoutsSelected(event);
+        }
+    }
+    
     /**
      * @return the year
      */
