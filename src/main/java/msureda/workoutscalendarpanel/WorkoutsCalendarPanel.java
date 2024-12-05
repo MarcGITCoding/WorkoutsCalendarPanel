@@ -28,8 +28,10 @@ import net.miginfocom.swing.MigLayout;
  * @author Marc Sureda
  */
 public class WorkoutsCalendarPanel extends JPanel implements Serializable {
-    private int year;
-    private int month;
+    LocalDate currentDate = LocalDate.now();
+        
+    private int year = currentDate.getYear();
+    private int month = currentDate.getMonthValue();
     private Color activeButtonColor = new Color(144, 238, 144);
     private Point initialClick;
     private JLabel monthYearLabel;
@@ -37,18 +39,13 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
     private final ArrayList<WorkoutsCalendarListener> listeners = new ArrayList<>();
     private final ArrayList<Workout> workouts = new ArrayList<>();
     
-    public WorkoutsCalendarPanel () {
-        LocalDate currentDate = LocalDate.now();
-        
-        if (this.year == 0) this.year = currentDate.getYear();
-        if (this.month == 0) this.month = currentDate.getMonthValue();
-        
+    public WorkoutsCalendarPanel () {        
         setLayout(new MigLayout("wrap 7", "[grow, fill]", "[grow, fill]"));
         
         monthYearLabel = new JLabel("", SwingConstants.CENTER);
         monthYearLabel.setFont(new Font("Arial", Font.BOLD, 18));
         add(monthYearLabel, "span, growx, align center");
-        
+
         renderCalendar(year, month);
         
         addSwipeListeners();
@@ -130,7 +127,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                //Set click to know de initial location
+                //Set click to know the initial location
                 initialClick = e.getPoint();
             }
         });
@@ -195,7 +192,11 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
      * @param year the year to set
      */
     public void setYear(int year) {
+        if (month < 1970) throw new IllegalArgumentException("El año no puede ser menor que 1970.");
+        if (month > 9000) throw new IllegalArgumentException("El año no puede ser mayor que 9000.");
+        
         this.year = year;
+        renderCalendar(year, month);
     }
 
     /**
@@ -209,7 +210,11 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
      * @param month the month to set
      */
     public void setMonth(int month) {
+        if (month <= 0) throw new IllegalArgumentException("El mes no puede ser menor que 1.");
+        if (month > 12) throw new IllegalArgumentException("El mes no puede ser mayor que 12.");
+        
         this.month = month;
+        renderCalendar(year, month);
     }
 
     /**
