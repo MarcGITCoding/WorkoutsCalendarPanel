@@ -101,7 +101,9 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         JButton button = new JButton(String.valueOf(date.getDayOfMonth()));
         button.setFocusPainted(false);
 
-        long count = workouts.stream().filter(w -> w.getForDate().equals(date)).count();
+        long count = workouts.stream()
+            .filter(w -> w.getForDate().toLocalDate().equals(date))
+            .count();
         
         if (count > 0) {
             button.setBackground(activeButtonColor);
