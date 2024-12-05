@@ -3,6 +3,9 @@ package msureda.workoutscalendarpanel;
 import java.awt.Color;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,6 +50,16 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         //DAY HEADERS
         for (String day : new String[]{"L", "M", "X", "J", "V", "S", "D"}) {
             add(new JLabel(day, SwingConstants.CENTER), "growx");
+        }
+        
+        YearMonth yearMonth = YearMonth.of(year, month);
+        LocalDate firstDayOfMonth = yearMonth.atDay(1);
+        int totalDays = yearMonth.lengthOfMonth();
+        
+        //Blank spaces before month start
+        int startDay = (firstDayOfMonth.get(ChronoField.DAY_OF_WEEK) + 5) % 7;
+        for (int i = 0; i < startDay; i++) {
+            add(new JLabel());
         }
         
         revalidate();
