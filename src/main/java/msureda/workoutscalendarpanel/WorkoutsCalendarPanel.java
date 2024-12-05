@@ -9,6 +9,7 @@ import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -62,8 +63,41 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
             add(new JLabel());
         }
         
+        for (int currentDay = 1; currentDay <= totalDays; currentDay++) {
+            LocalDate date = LocalDate.of(year, month, currentDay);
+            JButton dayButton = createDayButton(date);
+            add(dayButton);
+        }
+        
         revalidate();
         repaint();
+    }
+    
+    private JButton createDayButton(LocalDate date) {
+        JButton button = new JButton(String.valueOf(date.getDayOfMonth()));
+        button.setFocusPainted(false);
+
+        long count = workouts.stream().filter(w -> w.getForDate().equals(date)).count();
+        
+        if (count > 0) {
+            button.setBackground(activeButtonColor);
+            button.setToolTipText("Entrenamientos: " + count);
+
+            button.addActionListener(e -> {
+                ArrayList<Workout> dayWorkouts = new ArrayList();
+                
+                try {
+                    java.sql.Date sqlDate = java.sql.Date.valueOf(date);
+                    dayWorkouts = DataAccess.getWorkoutsByDay(sqlDate);
+                } catch (SQLException ex) {
+                    Logger.getLogger(WorkoutsCalendarPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                fireWorkoutsEvent(dayWorkouts);
+            });
+        }
+
+        return button;
     }
     
     public void addCalendarEventListener(WorkoutsCalendarListener listener) {
