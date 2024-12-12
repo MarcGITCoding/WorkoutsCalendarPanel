@@ -1,5 +1,7 @@
 package msureda.workoutscalendarpanel;
 
+import msureda.workoutscalendarpanel.events.CalendarEventListener;
+import msureda.workoutscalendarpanel.events.CalendarEvent;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Point;
