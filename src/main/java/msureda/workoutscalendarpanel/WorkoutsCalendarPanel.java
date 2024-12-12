@@ -239,6 +239,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
      */
     public void setActiveButtonColor(Color activeButtonColor) {
         this.activeButtonColor = activeButtonColor;
+        renderCalendar(year, month);
     }
 
     /**
@@ -254,5 +255,6 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
     public void setConnectionString(String connectionString) {
         this.connectionString = connectionString;
         dataAccess = new DataAccess(this.connectionString);
+        renderCalendar(year, month);
     }
 }
