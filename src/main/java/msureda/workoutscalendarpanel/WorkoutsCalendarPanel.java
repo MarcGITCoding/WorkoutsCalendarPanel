@@ -29,7 +29,10 @@ import net.miginfocom.swing.MigLayout;
  */
 public class WorkoutsCalendarPanel extends JPanel implements Serializable {
     LocalDate currentDate = LocalDate.now();
-        
+
+    private String connectionString = "jdbc:sqlserver://localhost;database=simulapdb;user=sa;"
+                                     + "password=1234;encrypt=false;";
+    private DataAccess dataAccess;
     private int year = currentDate.getYear();
     private int month = currentDate.getMonthValue();
     private Color activeButtonColor = new Color(144, 238, 144);
@@ -39,7 +42,8 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
     private final ArrayList<CalendarEventListener> listeners = new ArrayList<>();
     private final ArrayList<Workout> workouts = new ArrayList<>();
     
-    public WorkoutsCalendarPanel () {        
+    public WorkoutsCalendarPanel () {
+        dataAccess = new DataAccess(connectionString);
         setLayout(new MigLayout("wrap 7", "[grow, fill]", "[grow, fill]"));
         
         monthYearLabel = new JLabel("", SwingConstants.CENTER);
@@ -65,7 +69,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         
         ArrayList<Workout> fetchedWorkouts = new ArrayList();
         try {
-            fetchedWorkouts = DataAccess.getWorkoutsByMonth(year, month);
+            fetchedWorkouts = dataAccess.getWorkoutsByMonth(year, month);
         } catch (SQLException ex) {
             Logger.getLogger(WorkoutsCalendarPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -111,7 +115,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
                 
                 try {
                     java.sql.Date sqlDate = java.sql.Date.valueOf(date);
-                    dayWorkouts = DataAccess.getWorkoutsByDay(sqlDate);
+                    dayWorkouts = dataAccess.getWorkoutsByDay(sqlDate);
                 } catch (SQLException ex) {
                     Logger.getLogger(WorkoutsCalendarPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -233,5 +237,20 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
      */
     public void setActiveButtonColor(Color activeButtonColor) {
         this.activeButtonColor = activeButtonColor;
+    }
+
+    /**
+     * @return the connectionString
+     */
+    public String getConnectionString() {
+        return connectionString;
+    }
+
+    /**
+     * @param connectionString the connectionString to set
+     */
+    public void setConnectionString(String connectionString) {
+        this.connectionString = connectionString;
+        dataAccess = new DataAccess(this.connectionString);
     }
 }

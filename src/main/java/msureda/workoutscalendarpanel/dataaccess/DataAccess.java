@@ -17,19 +17,17 @@ import msureda.workoutscalendarpanel.dto.Workout;
  */
 public class DataAccess {
 
-    private static Connection getConnection() throws SQLException {
-        Connection connection = null;
+    private String connectionString;
 
-        String connectionString = "jdbc:sqlserver://localhost;database=simulapdb;user=sa;"
-                + "password=1234;encrypt=false;";
-
-        connection = DriverManager.getConnection(connectionString);
-
-        return connection;
+    public DataAccess(String connectionString) {
+        this.connectionString = connectionString;
     }
 
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(connectionString);
+    }
     
-    public static ArrayList<Workout> getWorkoutsByMonth(int year, int month) throws SQLException {
+    public ArrayList<Workout> getWorkoutsByMonth(int year, int month) throws SQLException {
         ArrayList<Workout> workouts = new ArrayList<>();
         String sql = "SELECT Workouts.Id, Workouts.ForDate, Workouts.UserId, Workouts.Comments"
                    + " FROM Workouts"
@@ -56,7 +54,7 @@ public class DataAccess {
         return workouts;
     }
     
-    public static ArrayList<Workout> getWorkoutsByDay(Date day) throws SQLException {
+    public ArrayList<Workout> getWorkoutsByDay(Date day) throws SQLException {
         ArrayList<Workout> workouts = new ArrayList<>();
         String sql = "SELECT Workouts.Id AS WorkoutId, Workouts.ForDate, Workouts.Comments, "
             + "Usuaris.Id AS UserId, Usuaris.Nom AS UserName, Usuaris.Email AS UserEmail, "
