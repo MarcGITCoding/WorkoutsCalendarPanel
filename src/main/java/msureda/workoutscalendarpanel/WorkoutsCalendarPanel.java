@@ -202,8 +202,8 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
      * @param year the year to set
      */
     public void setYear(int year) {
-        if (month < 1970) throw new IllegalArgumentException("El año no puede ser menor que 1970.");
-        if (month > 9000) throw new IllegalArgumentException("El año no puede ser mayor que 9000.");
+        if (year < 1970) throw new IllegalArgumentException("El año no puede ser menor que 1970.");
+        if (year > 9000) throw new IllegalArgumentException("El año no puede ser mayor que 9000.");
         
         this.year = year;
         renderCalendar(year, month);
