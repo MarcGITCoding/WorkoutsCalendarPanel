@@ -3,8 +3,11 @@ package msureda.workoutscalendarpanel;
 import msureda.workoutscalendarpanel.events.CalendarEventListener;
 import msureda.workoutscalendarpanel.events.CalendarEvent;
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.Serializable;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -48,8 +52,8 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         dataAccess = new DataAccess(connectionString);
         setLayout(new MigLayout("wrap 7", "[grow, fill]", "[grow, fill]"));
         
-        monthYearLabel = new JLabel("", SwingConstants.CENTER);
-        monthYearLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        monthYearLabel = new JLabel("", SwingConstants.LEFT);
+        monthYearLabel.setFont(new Font("Arial", Font.BOLD, 24));
         add(monthYearLabel, "span, growx, align center");
 
         renderCalendar(year, month);
@@ -64,10 +68,19 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         LocalDate firstDayOfMonth = yearMonth.atDay(1);
         int totalDays = yearMonth.lengthOfMonth();
         
+        JPanel headerPanel = new JPanel(new MigLayout("insets 0", "[grow][right]", "[]"));
+        headerPanel.setOpaque(false);
+
         DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("es", "ES"));
         monthYearLabel.setText(monthFormatter.format(yearMonth).toUpperCase());
+        headerPanel.add(monthYearLabel, "growx");
 
-        add(monthYearLabel, "span, growx, align center");
+        JButton upButton = createNavigationButton("▲", e -> previousMonth());
+        JButton downButton = createNavigationButton("▼", e -> nextMonth());
+        headerPanel.add(upButton);
+        headerPanel.add(downButton);
+
+        add(headerPanel, "span, growx, align center");
         
         ArrayList<Workout> fetchedWorkouts = new ArrayList();
         try {
@@ -98,6 +111,18 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         
         revalidate();
         repaint();
+    }
+
+    private JButton createNavigationButton(String text, ActionListener action) {
+        JButton button = new JButton(text);
+        button.setFocusPainted(false);
+        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setBackground(new Color(200, 200, 200));
+        button.setForeground(Color.BLACK);
+        button.setPreferredSize(new Dimension(40, 30));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.addActionListener(action);
+        return button;
     }
     
     private JButton createDayButton(LocalDate date) {
