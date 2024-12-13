@@ -1,5 +1,6 @@
 package msureda.workoutscalendarpanel;
 
+import msureda.workoutscalendarpanel.components.CustomMonthYearLabel;
 import msureda.workoutscalendarpanel.events.CalendarEventListener;
 import msureda.workoutscalendarpanel.events.CalendarEvent;
 import java.awt.Color;
@@ -41,9 +42,9 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
     private DataAccess dataAccess;
     private int year = currentDate.getYear();
     private int month = currentDate.getMonthValue();
-    private Color activeButtonColor = new Color(144, 238, 144);
+    private Color activeButtonColor = new Color(60, 179, 113);
     private Point initialClick;
-    private JLabel monthYearLabel;
+    private CustomMonthYearLabel monthYearLabel;
     
     private final ArrayList<CalendarEventListener> listeners = new ArrayList<>();
     private final ArrayList<Workout> workouts = new ArrayList<>();
@@ -51,10 +52,6 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
     public WorkoutsCalendarPanel () {
         dataAccess = new DataAccess(connectionString);
         setLayout(new MigLayout("wrap 7", "[grow, fill]", "[grow, fill]"));
-        
-        monthYearLabel = new JLabel("", SwingConstants.LEFT);
-        monthYearLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        add(monthYearLabel, "span, growx, align center");
 
         renderCalendar(year, month);
         
@@ -72,13 +69,17 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         headerPanel.setOpaque(false);
 
         DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("es", "ES"));
+        
+        monthYearLabel = new CustomMonthYearLabel();
         monthYearLabel.setText(monthFormatter.format(yearMonth).toUpperCase());
-        headerPanel.add(monthYearLabel, "growx");
+        monthYearLabel.setFont(new Font("Segoe UI", Font.BOLD, 30));
+        monthYearLabel.setForeground(new Color(252, 220, 136));
+        headerPanel.add(monthYearLabel, "growx, gapleft 10");
 
         JButton upButton = createNavigationButton("▲", e -> previousMonth());
         JButton downButton = createNavigationButton("▼", e -> nextMonth());
-        headerPanel.add(upButton);
-        headerPanel.add(downButton);
+        headerPanel.add(upButton, "growx, gapright 10");
+        headerPanel.add(downButton, "growx, gapright 10");
 
         add(headerPanel, "span, growx, align center");
         
@@ -131,7 +132,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
     private JButton createNavigationButton(String text, ActionListener action) {
         JButton button = new JButton(text);
         button.setFocusPainted(false);
-        button.setFont(new Font("Arial", Font.BOLD, 16));
+        button.setFont(new Font("Segoe UI", Font.BOLD, 16));
         button.setBackground(new Color(200, 200, 200));
         button.setForeground(Color.BLACK);
         button.setPreferredSize(new Dimension(40, 30));
@@ -143,6 +144,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
     private JButton createDisabledDayButton(int day) {
         JButton button = new JButton(String.valueOf(day));
         button.setEnabled(false);
+        button.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         button.setBackground(Color.LIGHT_GRAY);
         button.setForeground(Color.DARK_GRAY);
         button.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -160,6 +162,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         if (count > 0) {
             button.setBackground(activeButtonColor);
             button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            button.setFont(new Font("Segoe UI", Font.BOLD, 16));
             button.setToolTipText("Entrenamientos: " + count);
 
             button.addActionListener(e -> {
@@ -174,6 +177,9 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
 
                 fireWorkoutsEvent(dayWorkouts);
             });
+        } else {
+            button.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+            button.setBackground(new Color(255, 240, 201));
         }
 
         return button;
