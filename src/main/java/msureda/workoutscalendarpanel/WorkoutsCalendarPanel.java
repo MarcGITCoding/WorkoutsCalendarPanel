@@ -97,15 +97,30 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
             add(new JLabel(day, SwingConstants.CENTER), "growx");
         }
         
-        //Blank spaces before month start
         int startDay = (firstDayOfMonth.get(ChronoField.DAY_OF_WEEK) + 6) % 7;
-        for (int i = 0; i < startDay; i++) {
-            add(new JLabel());
+        
+        // DAYS OF THE PREVIOUS MONTH
+        YearMonth prevMonth = yearMonth.minusMonths(1);
+        int prevMonthDays = prevMonth.lengthOfMonth();
+        for (int i = startDay - 1; i >= 0; i--) {
+            LocalDate prevDate = prevMonth.atDay(prevMonthDays - i);
+            JButton dayButton = createDisabledDayButton(prevDate.getDayOfMonth());
+            add(dayButton);
         }
         
+        // CURRENT MONTH DAYS
         for (int currentDay = 1; currentDay <= totalDays; currentDay++) {
             LocalDate date = LocalDate.of(year, month, currentDay);
             JButton dayButton = createDayButton(date);
+            add(dayButton);
+        }
+
+        // DAYS OF THE NEXT MONTH
+        int remainingCells = 42 - (startDay + totalDays);
+        YearMonth nextMonth = yearMonth.plusMonths(1);
+        for (int i = 1; i <= remainingCells; i++) {
+            LocalDate nextDate = nextMonth.atDay(i);
+            JButton dayButton = createDisabledDayButton(nextDate.getDayOfMonth());
             add(dayButton);
         }
         
@@ -125,6 +140,15 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         return button;
     }
     
+    private JButton createDisabledDayButton(int day) {
+        JButton button = new JButton(String.valueOf(day));
+        button.setEnabled(false);
+        button.setBackground(Color.LIGHT_GRAY);
+        button.setForeground(Color.DARK_GRAY);
+        button.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        return button;
+    }
+    
     private JButton createDayButton(LocalDate date) {
         JButton button = new JButton(String.valueOf(date.getDayOfMonth()));
         button.setFocusPainted(false);
@@ -135,6 +159,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         
         if (count > 0) {
             button.setBackground(activeButtonColor);
+            button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             button.setToolTipText("Entrenamientos: " + count);
 
             button.addActionListener(e -> {
