@@ -19,8 +19,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -87,7 +85,6 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         try {
             fetchedWorkouts = dataAccess.getWorkoutsByMonth(year, month);
         } catch (SQLException ex) {
-            Logger.getLogger(WorkoutsCalendarPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         workouts.clear();
@@ -172,7 +169,6 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
                     java.sql.Date sqlDate = java.sql.Date.valueOf(date);
                     dayWorkouts = dataAccess.getWorkoutsByDay(sqlDate);
                 } catch (SQLException ex) {
-                    Logger.getLogger(WorkoutsCalendarPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 fireWorkoutsEvent(dayWorkouts);
@@ -309,8 +305,12 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
      * @param connectionString the connectionString to set
      */
     public void setConnectionString(String connectionString) {
-        this.connectionString = connectionString;
-        dataAccess = new DataAccess(this.connectionString);
-        renderCalendar(year, month);
+        DataAccess newDataAccess = new DataAccess(connectionString);
+
+        if (newDataAccess.testConnection()) {
+            this.connectionString = connectionString;
+            this.dataAccess = newDataAccess;
+            renderCalendar(year, month);
+        }
     }
 }

@@ -22,6 +22,15 @@ public class DataAccess {
     public DataAccess(String connectionString) {
         this.connectionString = connectionString;
     }
+    
+    public boolean testConnection() {
+        try (Connection connection = DriverManager.getConnection(connectionString)) {
+            return true;
+        } catch (SQLException ex) {
+            System.err.println("Error al conectar con la base de datos: " + ex.getMessage());
+            return false;
+        }
+    }
 
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(connectionString);
