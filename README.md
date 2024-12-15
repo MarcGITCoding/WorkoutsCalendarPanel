@@ -12,6 +12,7 @@ The `WorkoutsCalendarPanel` is a Java Swing component designed to display a cale
 - **Swipe Navigation**: Navigate between months using mouse drag gestures.
 - **Customizable Appearance**: Set the color for days with workouts.
 - **Event Notification**: Notifies registered listeners when workouts are selected.
+- **Customizable Properties**: Set the color for days with workouts, the starting month and year, and the connection string for SQL Server communication.
 
 ## Classes
 
@@ -25,8 +26,14 @@ The `WorkoutsCalendarPanel` is a Java Swing component designed to display a cale
 ### Data Transfer Objects (DTOs)
 
 - **Workout**: Represents a workout with details like date, user, comments, and exercises.
+  - Fields: `Id` (int), `ForDate` (Date), `UserId` (int), `Comments` (String), `Exercises` (ArrayList<Exercise>), `User` (User).
+  - Methods: Getters and setters for all fields.
 - **User**: Represents a user associated with a workout.
+  - Fields: `Id` (int), `Name` (String), `Email` (String), `PasswordHash` (String), `Photo` (byte[]), `Instructor` (boolean).
+  - Methods: Getters and setters for all fields.
 - **Exercise**: Represents an exercise associated with a workout.
+  - Fields: `Id` (int), `Name` (String), `Description` (String), `DemoPhoto` (String).
+  - Methods: Getters and setters for all fields.
 
 ## Setup
 
