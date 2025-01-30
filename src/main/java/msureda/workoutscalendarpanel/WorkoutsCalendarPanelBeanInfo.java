@@ -24,6 +24,10 @@ public class WorkoutsCalendarPanelBeanInfo extends SimpleBeanInfo {
             connectionString.setDisplayName("Connection String");
             connectionString.setShortDescription("Cadena de textos de la conexión SQL.");
             
+            PropertyDescriptor instructorId = new PropertyDescriptor("instructorId", WorkoutsCalendarPanel.class);
+            instructorId.setDisplayName("ID de Instructor");
+            instructorId.setShortDescription("ID del Instructor del que sacar los entrenamientos de los alumnos.");
+            
             PropertyDescriptor year = new PropertyDescriptor("year", WorkoutsCalendarPanel.class);
             year.setDisplayName("Año");
             year.setShortDescription("El año inicial que muestra el calendario.");
@@ -40,9 +44,10 @@ public class WorkoutsCalendarPanelBeanInfo extends SimpleBeanInfo {
             System.arraycopy(panelProperties, 0, allProperties, 0, panelProperties.length);
             
             allProperties[panelProperties.length] = connectionString;
-            allProperties[panelProperties.length + 1] = year;
-            allProperties[panelProperties.length + 2] = month;
-            allProperties[panelProperties.length + 3] = activeButtonColor;
+            allProperties[panelProperties.length + 1] = instructorId;
+            allProperties[panelProperties.length + 2] = year;
+            allProperties[panelProperties.length + 3] = month;
+            allProperties[panelProperties.length + 4] = activeButtonColor;
             
             return allProperties;
         } catch (IntrospectionException ex) {

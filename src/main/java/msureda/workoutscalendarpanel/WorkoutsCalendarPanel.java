@@ -38,6 +38,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
     private String connectionString = "jdbc:sqlserver://localhost;database=simulapdb;user=sa;"
                                      + "password=1234;encrypt=false;";
     private DataAccess dataAccess;
+    private int instructorId = 0;
     private int year = currentDate.getYear();
     private int month = currentDate.getMonthValue();
     private Color activeButtonColor = new Color(60, 179, 113);
@@ -51,12 +52,12 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         dataAccess = new DataAccess(connectionString);
         setLayout(new MigLayout("wrap 7", "[grow, fill]", "[grow, fill]"));
 
-        renderCalendar(year, month);
+        renderCalendar(instructorId, year, month);
         
         addSwipeListeners();
     }
     
-    public void renderCalendar(int year, int month) {
+    public void renderCalendar(int instructorId, int year, int month) {
         removeAll();
         
         YearMonth yearMonth = YearMonth.of(year, month);
@@ -83,7 +84,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         
         ArrayList<Workout> fetchedWorkouts = new ArrayList();
         try {
-            fetchedWorkouts = dataAccess.getWorkoutsByMonth(year, month);
+            fetchedWorkouts = dataAccess.getWorkoutsByMonth(instructorId, year, month);
         } catch (SQLException ex) {
         }
         
@@ -215,7 +216,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         } else {
             month++;
         }
-        renderCalendar(year, month);
+        renderCalendar(instructorId, year, month);
     }
 
     private void previousMonth() {
@@ -225,7 +226,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         } else {
             month--;
         }
-        renderCalendar(year, month);
+        renderCalendar(instructorId, year, month);
     }
 
     public void addCalendarEventListener(CalendarEventListener listener) {
@@ -258,7 +259,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         if (year > 9000) throw new IllegalArgumentException("El año no puede ser mayor que 9000.");
         
         this.year = year;
-        renderCalendar(year, month);
+        renderCalendar(instructorId, year, month);
     }
 
     /**
@@ -276,7 +277,22 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         if (month > 12) throw new IllegalArgumentException("El mes no puede ser mayor que 12.");
         
         this.month = month;
-        renderCalendar(year, month);
+        renderCalendar(instructorId, year, month);
+    }
+
+    /**
+     * @return the instructor id
+     */
+    public int getInstructorId() {
+        return instructorId;
+    }
+
+    /**
+     * @param instructorId the instructor id to set
+     */
+    public void setInstructorId(int instructorId) {
+        this.instructorId = instructorId;
+        renderCalendar(instructorId, year, month);
     }
 
     /**
@@ -291,7 +307,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
      */
     public void setActiveButtonColor(Color activeButtonColor) {
         this.activeButtonColor = activeButtonColor;
-        renderCalendar(year, month);
+        renderCalendar(instructorId, year, month);
     }
 
     /**
@@ -310,7 +326,7 @@ public class WorkoutsCalendarPanel extends JPanel implements Serializable {
         if (newDataAccess.testConnection()) {
             this.connectionString = connectionString;
             this.dataAccess = newDataAccess;
-            renderCalendar(year, month);
+            renderCalendar(instructorId, year, month);
         }
     }
 }

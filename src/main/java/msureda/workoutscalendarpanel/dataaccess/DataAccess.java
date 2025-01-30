@@ -36,17 +36,20 @@ public class DataAccess {
         return DriverManager.getConnection(connectionString);
     }
     
-    public ArrayList<Workout> getWorkoutsByMonth(int year, int month) throws SQLException {
+    public ArrayList<Workout> getWorkoutsByMonth(int instructorId, int year, int month) throws SQLException {
         ArrayList<Workout> workouts = new ArrayList<>();
-        String sql = "SELECT Workouts.Id, Workouts.ForDate, Workouts.UserId, Workouts.Comments"
-                   + " FROM Workouts"
-                   + " WHERE YEAR(Workouts.ForDate) = ? AND MONTH(Workouts.ForDate) = ?"
-                   + " ORDER BY Workouts.ForDate";
+        String sql = "SELECT w.Id, w.ForDate, w.UserId, w.Comments"
+                   + " FROM Workouts w"
+                   + " JOIN Usuaris u ON w.UserId = u.Id"
+                   + " WHERE YEAR(w.ForDate) = ? AND MONTH(w.ForDate) = ?"
+                   + " AND u.AssignedInstructor = ?"
+                   + " ORDER BY w.ForDate";
 
         try (Connection connection = getConnection();
              PreparedStatement selectStatement = connection.prepareStatement(sql)) {
             selectStatement.setInt(1, year);
             selectStatement.setInt(2, month);
+            selectStatement.setInt(3, instructorId);
 
             ResultSet resultSet = selectStatement.executeQuery();
             while (resultSet.next()) {
